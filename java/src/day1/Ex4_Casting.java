@@ -37,6 +37,8 @@ public class Ex4_Casting {
 		System.out.println(num4_3);
 		System.out.println(num4_4);
 		
+		//page 55~56 정수를 실수로 자동형변환 할 때 정밀도가 떨어질 수 있다. int=> float
+		//int => float으로 타입변환 하기 보단 double로 타입변환하여 활용한다.
 		int num5_1 = 1234567890;
 		float num5_2 = num5_1; //자동 타입변환
 		int num5_3 = (int)num5_2; // 강제 타입변환
