@@ -1,6 +1,6 @@
 package day2;
 
-public class Ex12_Test2 {
+public class Ex12_if2 {
 
 	public static void main(String[] args) {
 		/* num이 짝수이면 짝수라고 출력하고, 짝수가 아닐 시 홀수라고 출력하는 코드를
