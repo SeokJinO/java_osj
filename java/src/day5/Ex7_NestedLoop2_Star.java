@@ -1,6 +1,6 @@
 package day5;
 
-public class Ex7_NastedLoop2_Star {
+public class Ex7_NestedLoop2_Star {
 
 	public static void main(String[] args) {
 		/* 별찍기 예제
