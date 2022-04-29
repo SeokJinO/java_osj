@@ -9,12 +9,14 @@ public class Ex13_Continue_For {
 		 * 규칙성 : i가 홀수이면 continue. 아니면 i를 출력
 		 * 반복문 종료 후 : 없음
 		 */		
+		
+		//for문에서 continue는 증감식위치로 이동
 		for(int i = 1; i <= 10; i++) {
 			if(i%2==1)
 				continue;
 			System.out.println(i);
 		}
-		
+		//while문에서 continue는 조건식 위치로 이동
 		int i =1;
 		while(i<=10) {
 			if(i%2==1) {
