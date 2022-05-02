@@ -9,9 +9,7 @@ public class Ex1_Calculator {
 		 * 단 , q가 입력될 때 까지 입력을 계속적으로 받습니다. */
 		 
 		Scanner sc = new Scanner(System.in);
-		System.out.println("정수 두개를 입력하세요.");
-		int num1 = sc.nextInt();
-		int num2 = sc.nextInt();
+
 		
 		while(true) {
 			System.out.println("산술 연산자 메뉴");
@@ -22,6 +20,10 @@ public class Ex1_Calculator {
 			System.out.println("5. 나머지");
 			System.out.println("q. 종료");
 			System.out.println("메뉴를 선택하세요 : ");
+			
+			System.out.println("정수 두개를 입력하세요.");
+			int num1 = sc.nextInt();
+			int num2 = sc.nextInt();
 			
 			char ch = sc.next().charAt(0);
 			if(ch=='1') {
@@ -34,7 +36,10 @@ public class Ex1_Calculator {
 				System.out.println((double)num1/num2);
 			}else if(ch=='5') {
 				System.out.println(num1%num2);
-			}else {
+			}else if(ch=='q') {
+				break;
+			}
+			else {
 				System.out.println("잘못된 연산자입니다.");
 		}
 	}
