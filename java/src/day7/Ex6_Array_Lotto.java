@@ -9,8 +9,8 @@ public class Ex6_Array_Lotto {
 		 * 1~45 사이의 중복되지 않은 수 7개를 배열에 저장하는 코드를 작성하세요.
 		 */
 		// 강사님이 한 예제
-		int min = 1, max = 4;
-		int lotto[] = new int[4]; // 6번지가 보너스 번호
+		int min = 1, max = 45;
+		int lotto[] = new int[7]; // 6번지가 보너스 번호
 		int count = 0; // 배열에 저장된 중복되지 않은 숫자의 개수
 		// 로또 당첨번호
 		for (; count < lotto.length;) {
@@ -36,25 +36,28 @@ public class Ex6_Array_Lotto {
 		for (int i = 0; i < user.length; i++) {
 			user[i] = sc.nextInt();
 		}
-		for (int i = 0; i < lotto.length; i++) {
-			for (int j = 0; j < lotto.length; j++) {
+		for (int i = 0; i < lotto.length-1; i++) {
+			for (int j = 0; j < user.length; j++) {
 				if (lotto[i] == user[j]) {
 					cnum++;
-					if(cnum==5&&lotto[5]==user[j]) {
-						cnum++;
-					}else if(cnum==6) {
-						cnum++;
-					}
 				}
 			}
 		}
 		
 		switch(cnum) {
-		case 7 : System.out.println("1등");
+		case 6 : System.out.println("1등");
 		break;
-		case 6 : System.out.println("2등 ");
-		break;
-		case 5 : System.out.println("3등");
+		case 5 : int k;
+		for(k=0; k<user.length; k++) {
+			if(user[k] == lotto[6]) {
+				break;
+			}
+		}
+		if(k == user.length) {
+			System.out.println("3등");
+		}else {
+			System.out.println("2등");
+		}
 		break;
 		case 4 : System.out.println("4등");
 		break;
