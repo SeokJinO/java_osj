@@ -9,12 +9,12 @@ public class Ex6_Array_Lotto {
 		 * 1~45 사이의 중복되지 않은 수 7개를 배열에 저장하는 코드를 작성하세요.
 		 */
 		// 강사님이 한 예제
-
-		int lotto[] = new int[6]; // 6번지가 보너스 번호
+		int min = 1, max = 4;
+		int lotto[] = new int[4]; // 6번지가 보너스 번호
 		int count = 0; // 배열에 저장된 중복되지 않은 숫자의 개수
 		// 로또 당첨번호
-		for (; count < 6;) {
-			int r = (int) (Math.random() * 45 + 1);
+		for (; count < lotto.length;) {
+			int r = (int) (Math.random() * (max-min+1)+min);
 			int i;
 			// 중복체크
 			for (i = 0; i < count; i++) {
