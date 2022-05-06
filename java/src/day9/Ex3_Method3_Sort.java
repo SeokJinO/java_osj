@@ -22,6 +22,7 @@ public class Ex3_Method3_Sort {
 		for(int i = 0; i< stu.length; i++) {
 			System.out.print(stu[i] + " ");
 		}
+		sc.close();
 	}
 	/* 기능 : 정수 배열이 주어지면 오름차순 으로 정렬하는 메소드
 	 * 매개변수 : 배열 arr
