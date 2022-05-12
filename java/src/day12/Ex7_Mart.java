@@ -14,10 +14,14 @@ public class Ex7_Mart {
 		Product list[] = new Product[30];
 		//저장된 판매 제품 갯수
 		int listcount = 0;
+		//장바구니에 담긴 제품 개수
+		int basketCount = 0;
 		int menu;
 		int subMenu, price, amount, capacity, count;
 		String name;
 		Scanner sc = new Scanner(System.in);
+		//바구니 생성. 종류는 최대 30개
+		Product basket[] = new Product[30];
 		do {
 			menu = selectMenu(sc);
 			switch (menu) {
@@ -42,16 +46,60 @@ public class Ex7_Mart {
 				break;
 			case 2:
 				printProductList(list, listcount);
-				if(addAmountProductList(sc, list, listcount)==true) {
+				if (addAmountProductList(sc, list, listcount) == true) {
 					System.out.println("입고가 완료되었습니다.");
-				}else {
+				} else {
 					System.out.println("입고에 실패하였습니다.");
 				}
 				break;
 			case 3:
 				printProductList(list, listcount);
+				/* 제품을 선택
+				 * 수량을 입력
+				 * 바구니에 담아야 함
+				 * 제품 재고량에서 수량만큼 뺌
+				 * 현재 바구니에 담긴 목록을 출력*/
+				Product selectProduct = selectProduct(sc, list, listcount);
+				if (selectProduct != null) {
+					basket[basketCount] = selectProduct;
+					basketCount++;
+					printProductList(basket, basketCount);
+				} else {
+					System.out.println("선택된 제품이 없습니다.");
+				}
 				break;
 			case 4:
+				/* 현재 바구니에 담긴 목록을 출력하고
+				 * 최종 합계를 출력
+				 * 결제 금액을 입력
+				 * 결제를 진행
+				 * 		금액이 부족하면 결제를 취소할건지 물어봄
+				 * 		취소하면 장바구니를 비움
+				 * 		결제를 취소하지 않으면 장바구니를 보관
+				 * 		결제가 정상적으로 완료되면
+				 * 		거스름돈을 출력하고
+				 * 		바구니를 비움*/
+				printProductList(basket, basketCount);
+				// 최종 합계 출력
+				int sum = sumProductList(basket, basketCount);
+				System.out.println("구매 총 금액 : " + sum);
+				//결제 금액을 입력
+				System.out.println("금액을 입력하세요 : ");
+				int buyPrice = sc.nextInt();
+				//결제를 진행
+				if (sum > buyPrice) {
+					System.out.println("결제를 취소하겠습니까? ( 취소시 장바구니 비워짐 ) : y/n");
+					char cancel = sc.next().charAt(0);
+					// 취소
+					if (cancel == 'y' || cancel == 'Y') {
+						//장바구니에 담긴 제품들을 마트에 돌려줘야 함
+						returnProductList(list, listcount, basket, basketCount);
+						//장바구니를 비움
+						basketCount = 0;
+					}
+				} else {
+					System.out.println("거스름돈 : " + (buyPrice - sum) + "원");
+				}
 				break;
 			case 5:
 				break;
@@ -69,10 +117,10 @@ public class Ex7_Mart {
 	public static int selectMenu(Scanner sc) {
 		int menu;
 		System.out.println("====메뉴====");
-		System.out.println("1. 제품 등록");
-		System.out.println("2. 제품 입고");
-		System.out.println("3. 제품 선택");
-		System.out.println("4. 제품 구매");
+		System.out.println("1. 제품 등록(관리자)");
+		System.out.println("2. 제품 입고(관리자)");
+		System.out.println("3. 제품 선택(고객)");
+		System.out.println("4. 제품 구매(고객)");
 		System.out.println("5. 프로그램 종료");
 		System.out.println("메뉴 선택 : ");
 		menu = sc.nextInt();
@@ -150,8 +198,75 @@ public class Ex7_Mart {
 		}
 		//해당 제품의 수량을 변경
 		//입고 전 수량
-		int preAmount = list[num - 1].getAmount();
-		list[num - 1].setAmount(preAmount + amount);
+		list[num - 1].sumAmount(amount);
 		return true;
+	}
+
+	/* 기능 : 스캐너를 이용하여 제품과 수량을 선택하면
+	 * 		 제품리스트에서 해당 제품을 수량에 맞게 꺼내서 제품을 돌려주는 메소드
+	 * 매개변수 : Scanner, 제품 리스트(마트), 제품 수량 => Scanner sc, Product list[], int listcount
+	 * 리턴타입 : 선택된 제품 (입력한 수량으로) => Product
+	 * 메소드명 : selectProduct
+	 * */
+	public static Product selectProduct(Scanner sc, Product list[], int listcount) {
+		System.out.println("구매할 제품을 선택하세요 : ");
+		int num = sc.nextInt();
+		if (num > listcount) {
+			return null;
+		}
+		System.out.println("구매할 제품의 수량을 입력하세요 : ");
+		//입고된 수량
+		int amount = sc.nextInt();
+		Product buyProduct = list[num - 1];
+		Product selectProduct = null;
+		if (buyProduct instanceof SnackBox) {
+			selectProduct = new SnackBox((SnackBox) buyProduct);
+		} else if (buyProduct instanceof Drink) {
+			selectProduct = new Drink((Drink) buyProduct);
+		} else {
+			return null;
+		}
+		//재고량보다 많은 수량을 입력한 경우
+		if (buyProduct.getAmount() < amount) {
+			//수량을 재고량으로 수정
+			amount = buyProduct.getAmount();
+		}
+		selectProduct.setAmount(amount);
+		buyProduct.sumAmount(-amount);
+		return selectProduct;
+	}
+
+	/* 기능 : 제품 리스트가 주어지면 해당 제품 리스트의 합계를 구하여 알려주는 메소드
+	 * 매개변수 : 제품 리스트 => Product list[], int listCount
+	 * 리턴타입 : 합계 => int
+	 * 메소드명 : sumProductList*/
+	public static int sumProductList(Product list[], int listcount) {
+		int sum = 0;
+		for (int i = 0; i < listcount; i++) {
+			sum += list[i].getPrice() * list[i].getAmount();
+		}
+		return sum;
+	}
+
+	/* 기능: 장바구니에 담은 제품들을 마켓에 돌려주는 메소드
+	 * 매개변수 : 마켓제품 리스트, 장바구니 리스트 
+	 *          => Product list[], int listcount, Product basket[], int basketCount
+	 * 리턴타입 : 없음 => void
+	 * 메소드명 : returnProductList*/
+	public static void returnProductList(Product list[], int listcount, Product basket[], int basketCount) {
+		if (list == null || basket == null) {
+			return;
+		}
+		for (int i = 0; i < listcount; i++) {
+			for (int j = 0; j < basketCount; j++) {
+				Product pi = list[i];
+				Product pj = basket[j];
+				if (list[i].getName().equals(basket[j].getName())) {
+					//pi.amunt : 재고량, pj.amount : 구매하려고 선택했던 수량
+					pi.sumAmount(pj.getAmount());
+
+				}
+			}
+		}
 	}
 }
