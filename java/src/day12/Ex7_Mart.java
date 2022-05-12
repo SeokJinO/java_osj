@@ -74,30 +74,24 @@ public class Ex7_Mart {
 				}
 				break;
 			case 4:
-				/* 현재 바구니에 담긴 목록을 출력하고
-				 * 최종 합계를 출력
-				 * 결제 금액을 입력
-				 * 결제를 진행
-				 * 		금액이 부족하면 결제를 취소할건지 물어봄
-				 * 		취소하면 장바구니를 비움
-				 * 		결제를 취소하지 않으면 장바구니를 보관
-				 * 		결제가 정상적으로 완료되면
-				 * 		거스름돈을 출력하고
-				 * 		바구니를 비움*/
+				//장바구니에 있는 목록을 출력
 				printProductList(basket, basketCount);
-				// 최종 합계 출력
+				//장바구니에 있는 목록의 최종 합계 출력
 				int sum = sumProductList(basket, basketCount);
 				System.out.println("구매 총 금액 : " + sum);
+				
 				//결제 금액을 입력
 				System.out.println("금액을 입력하세요 : ");
 				int buyPrice = sc.nextInt();
-				//결제를 진행
+				
+				//금액이 부족하면
 				if (sum > buyPrice) {
+					//결제를 취소할건지 물어봄
 					System.out.println("결제를 취소하겠습니까? ( 취소시 장바구니 비워짐 ) : y/n");
 					char cancel = sc.next().charAt(0);
-					// 취소
+					// 취소하면
 					if (cancel == 'y' || cancel == 'Y') {
-						//장바구니에 담긴 제품들을 마트에 돌려줘야 함
+						//장바구니에 담긴 제품들을 마트에 돌려줌
 						returnProductList(list, listcount, basket, basketCount);
 						//장바구니를 비움
 						basketCount = 0;
@@ -149,6 +143,7 @@ public class Ex7_Mart {
 	 * 리턴타입 : 생성한 제품 => Product
 	 * 메소드명 : createProduct */
 	public static Product createProduct(int subMenu, Scanner sc) {
+		//등록하기 위한 공통된 제품 정보를 입력
 		System.out.println("제품명 : ");
 		String name = sc.next();
 		System.out.println("가격 : ");
