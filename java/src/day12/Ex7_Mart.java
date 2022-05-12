@@ -10,59 +10,64 @@ public class Ex7_Mart {
 	 * 4. 제품 구매
 	 * 5. 프로그램 종료*/
 	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
 		//제품을 관리하기 위한 배열
 		Product list[] = new Product[30];
+		//바구니 생성. 종류는 최대 30개
+		Product basket[] = new Product[30];
+		
 		//저장된 판매 제품 갯수
 		int listcount = 0;
 		//장바구니에 담긴 제품 개수
 		int basketCount = 0;
-		int menu;
-		int subMenu, price, amount, capacity, count;
-		String name;
-		Scanner sc = new Scanner(System.in);
-		//바구니 생성. 종류는 최대 30개
-		Product basket[] = new Product[30];
+		
+		int menu, subMenu;
+		
 		do {
+			//메뉴 출력 후 메뉴를 선택
 			menu = selectMenu(sc);
 			switch (menu) {
+			//선택한 메뉴가 1이면 제품 등록
 			case 1:
-				/* 음료수인지 박스과자인지 선택
-				 * 제품명, 가격, 수량, 박스과자면 1박스당 개수를, 음료수면 용량을 입력
-				 * 입력받은 정보를 이용하여 객체로 만든 후 판매 목록에 업데이트*/
+				//서브 메뉴 출력 후 서브 메뉴를 선택
 				subMenu = selectSubMenu(sc);
+				
 				switch (subMenu) {
-				case 1:
+				//올바른 서브메뉴를 선택하면
+				case 1: case 2:
+					//제품 정보를 입력 받아서 판매 제품 리스트에 추가
 					list[listcount] = createProduct(subMenu, sc);
+					//판매 제품 갯수 증가
 					listcount++;
 					break;
-				case 2:
-					list[listcount] = createProduct(subMenu, sc);
-					listcount++;
-					break;
+					//잘못된 서브메뉴를 선택하면
 				default:
 					System.out.println("선택할 수 없는 종류입니다.");
 				}
-
 				break;
+				//선택한 메뉴가 2이면 제품 입고
 			case 2:
+				//입고 가능한 제품들을 출력
 				printProductList(list, listcount);
-				if (addAmountProductList(sc, list, listcount) == true) {
+				//제품을 선택하고 입고할 수량을 선택해서 판매 제품 리스트에 제품이 입고가 되면
+				if (addAmountProductList(sc, list, listcount)) {
 					System.out.println("입고가 완료되었습니다.");
 				} else {
 					System.out.println("입고에 실패하였습니다.");
 				}
 				break;
 			case 3:
+				//구매하기 위해 판매 제품 리스트를 출력
 				printProductList(list, listcount);
-				/* 제품을 선택
-				 * 수량을 입력
-				 * 바구니에 담아야 함
-				 * 제품 재고량에서 수량만큼 뺌
-				 * 현재 바구니에 담긴 목록을 출력*/
+				//제품을 선택과 수량을 선택함
 				Product selectProduct = selectProduct(sc, list, listcount);
+				//선택된 제품이 있으면 
 				if (selectProduct != null) {
+					//장바구니에 선택된 제품을 담고
 					basket[basketCount] = selectProduct;
+					//장바구니에 담긴 개수를 하나 증가
 					basketCount++;
+					//장바구니에 있는 목록을 출력
 					printProductList(basket, basketCount);
 				} else {
 					System.out.println("선택된 제품이 없습니다.");
