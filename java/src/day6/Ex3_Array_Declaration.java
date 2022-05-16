@@ -18,7 +18,7 @@ public class Ex3_Array_Declaration {
 		//{}를 이용하여 초기화 하는 방법은 배열 선언과 동시에 초기화 하는 경우만 가능
 		int []arr10 = {1,2,3};
 		//arr10 = {4,5,6}; //{}를 이용한 방법은 초기화 이후에는 사용이 불가능
-		int []arr11 = new int[]
+		int []arr11 = new int[3];
 	}
 
 }
