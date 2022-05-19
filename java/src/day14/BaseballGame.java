@@ -1,15 +1,17 @@
 package day14;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class BaseballGame implements ConsoleProgram {
 
 	private final int exitMenu = 3;
 	private Scanner sc = new Scanner(System.in);
-	private int com[] = new int[3];
-	private int user[] = new int[3];
-	private int record[] = new int[10];
-	private int recordCount = 0; // 기록에 등록된 개수
+	private List<Integer> com = new ArrayList<Integer>();
+	private List<Integer> user = new ArrayList<Integer>();
+	private List<Integer> records = new ArrayList<Integer>();
 	private int min = 1;
 	private int max = 9;
 
@@ -31,12 +33,59 @@ public class BaseballGame implements ConsoleProgram {
 		switch (menu) {
 		case 1:
 			//컴퓨터 랜덤 수 생성
+			com.clear();
 			createComRandom();
-			//사용자 숫자 입력
-			//S,B,O 판별
+			System.out.println();
+			int count = 0;
+			while (true) {
+				user.clear();
+				inputNumbers(3);
+				//스트라이크, 볼 개수 확인
+				int strike = 0;
+				for (int i = 0; i < com.size(); i++) {
+					if (com.get(i).equals(user.get(i))) {
+						strike++;
+					}
+				}
+				int ball = 0;
+				for (Integer tmp : com) {
+					if (user.contains(tmp)) {
+						ball++;
+					}
+				}
+				ball = ball - strike;
+				if (strike != 0) {
+					System.out.print(strike + "S");
+				}
+				if (ball != 0) {
+					System.out.print(ball + "B");
+				}
+				if(strike == 0 && ball == 0) {
+					System.out.println("OUT");
+				}
+				System.out.println();
+				//횟수 1증가
+				count++;
+				if(strike==3) {
+					break;
+				}
+			}
+			System.out.println(count+"번째 성공");
 			//기록 저장
+			records.add(count);
+			records.sort(new Comparator<Integer>() {
+
+				@Override
+				public int compare(Integer o1, Integer o2) {
+					return o1 - o2;
+				}
+			});
+			if(records.size() > 5) {
+				records.remove(5);
+			}
 			break;
 		case 2:
+			System.out.println(records);
 			break;
 		case 3:
 			break;
@@ -62,40 +111,36 @@ public class BaseballGame implements ConsoleProgram {
 	}
 
 	public void createComRandom() {
-		int count = 0;
-		while (count < com.length) {
+		while (com.size() < 3) {
 			//랜덤 수 생성
 			int r = random(min, max);
 			//중복 체크 => 중복되지 않으면 저장
-			if(indexOf(com, count, r) == -1) {
-				com[count++] = r;
+			if (com.indexOf(r) == -1) {
+				com.add(r);
 				System.out.print(r + " ");
 			}
-			//count 증가
 		}
 	}
 
-	public static int random(int min, int max) {
-		if (min > max) {
-			int tmp = min;
-			min = max;
-			max = tmp;
+	public int play() {
+		int count = 0;
+		for (int i = 0; i < com.size(); i++) {
+			user.add(sc.nextInt());
 		}
-		return (int) (Math.random() * (max - min + 1) + min);
-	}
-
-	public static int indexOf(int arr[], int size, int num) {
-		if(size == 0) {
-			return -1;
-		}
-		if(arr.length< size) {
-			size = arr.length;
-		}
-		for(int i = 0; i < size; i++) {
-			if(arr[i] == num) {
-				return i;
+		for (int i = 0; i < com.size(); i++) {
+			if (com.get(i) == user.get(i)) {
+				count++;
 			}
 		}
-		return -1;
+		return count;
+
 	}
+	public void inputNumbers(int count) {
+		System.out.println("중복되지 않게 1~9사이의 3개의 숫자를 입력하세요.");
+		System.out.print("입력 (예 : 1 2 3) : ");
+		while (user.size() < 3) {
+			user.add(sc.nextInt());
+		}
+	}
+
 }
