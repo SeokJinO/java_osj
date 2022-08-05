@@ -37,7 +37,7 @@
 			</tbody>
 		</table>
 		<a href="<%=request.getContextPath()%>/board/insert"
-			class="btn btn-outline-warning">글쓰기</a>
+			class="btn btn-outline-warning mb-3">글쓰기</a>
 	</div>
 </body>
 </html>
