@@ -21,7 +21,13 @@
 					<a class="nav-link" href="<%=request.getContextPath()%>/logout">로그아웃</a>
 				</li>
 				</c:if>
+				<li class="nav-item">
+					<a class="nav-link" href="<%=request.getContextPath()%>/board/list">게시글</a>
+				</li>
 			</ul>
 		</div>
+			<c:if test="${user != null }">
+				<a href="javascript:0;" class="float:right" style="color:white">${user.me_id}님 환영합니다.</a>
+			</c:if>
 	</div>
 </nav>
