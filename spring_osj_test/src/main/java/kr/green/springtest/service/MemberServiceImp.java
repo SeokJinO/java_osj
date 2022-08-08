@@ -12,6 +12,8 @@ public class MemberServiceImp implements MemberService {
 
 	@Override
 	public String getEmail(String id) {
+		if(id == null)
+			return null;
 		return memberDao.getEmail(id);
 	}
 }

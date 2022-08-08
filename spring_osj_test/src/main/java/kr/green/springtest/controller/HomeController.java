@@ -16,7 +16,9 @@ public class HomeController {
 	@RequestMapping(value= "/")
 	public ModelAndView home(ModelAndView mv){
 	    mv.setViewName("/main/home");
-	    System.out.println(memberService.getEmail("a"));
+	    System.out.println(memberService.getEmail("qwe"));
+	    mv.addObject("setHeader","타일즈");
+
 	    return mv;
 	}
 	

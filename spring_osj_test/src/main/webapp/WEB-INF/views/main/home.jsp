@@ -6,5 +6,6 @@
 		Hello world!  
 	</h1>
 	<P> ${setHeader}. </P>
+	<p> ${setFooter}</p>
 </div>
 
