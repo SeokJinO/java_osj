@@ -18,9 +18,6 @@ public class HomeController {
 	@RequestMapping(value= "/", method=RequestMethod.GET)
 	public ModelAndView home(ModelAndView mv){
 	    mv.setViewName("/main/home");
-	    System.out.println(memberService.getEmail("qwe"));
-	    mv.addObject("setHeader","타일즈");
-
 	    return mv;
 	}
 	
@@ -38,6 +35,23 @@ public class HomeController {
 			mv.setViewName("redirect:/signup");
 		}
 	    
+	    return mv;
+	}
+	@RequestMapping(value= "/login", method=RequestMethod.GET)
+	public ModelAndView loginGet(ModelAndView mv){
+	    mv.setViewName("/main/login");
+
+	    return mv;
+	}
+	@RequestMapping(value= "/login", method=RequestMethod.POST)
+	public ModelAndView loginPost(ModelAndView mv, MemberVO member){
+		MemberVO user = memberService.login(member);
+		if(user != null)
+			mv.setViewName("redirect:/");
+		else
+			mv.setViewName("redirect:/login");
+		mv.addObject("user", user);
+		System.out.println(user);
 	    return mv;
 	}
 	

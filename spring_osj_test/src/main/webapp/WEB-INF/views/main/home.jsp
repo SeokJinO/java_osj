@@ -5,7 +5,6 @@
 	<h1>
 		Hello world!  
 	</h1>
-	<P> ${setHeader}. </P>
-	<p> ${setFooter}</p>
+	<P> ${user} </P>
 </div>
 

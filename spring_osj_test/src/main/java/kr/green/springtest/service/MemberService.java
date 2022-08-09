@@ -4,8 +4,10 @@ import kr.green.springtest.vo.MemberVO;
 
 public interface MemberService {
 
-	public String getEmail(String string);
-
 	public boolean signup(MemberVO member);
+
+	public MemberVO login(MemberVO member);
+
+
 
 }
