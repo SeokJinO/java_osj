@@ -1,5 +1,7 @@
 package kr.green.springtest.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,6 +55,12 @@ public class HomeController {
 		mv.addObject("user", user);
 		System.out.println(user);
 	    return mv;
+	}
+	@RequestMapping(value = "/logout")
+	public ModelAndView logoutGet(ModelAndView mv, HttpSession session) {
+		session.removeAttribute("user");
+		mv.setViewName("redirect:/");
+		return mv;
 	}
 	
 }
