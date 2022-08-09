@@ -1,5 +1,6 @@
 package kr.green.springtest.vo;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import lombok.Data;
@@ -20,4 +21,21 @@ public class BoardVO {
 	private int bd_views;
 	private String bd_del;
 
+	public String getBd_reg_date() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		return format.format(bd_reg_date);
+	}
+	
+	public String getBd_reg_date_time_str() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		return format.format(bd_reg_date);
+	}
+	
+	public String getBd_up_date_time_str() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		if(bd_up_date != null)
+			return format.format(bd_up_date);
+		else
+			return format.format(bd_reg_date);
+	}
 }
