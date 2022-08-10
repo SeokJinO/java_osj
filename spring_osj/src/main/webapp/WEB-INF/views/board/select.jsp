@@ -18,7 +18,7 @@
 				<input type="text" class="form-control" name="bd_me_id" value="${board.bd_me_id}" readonly>
 			</div>
 			<div class="form-group">
-				<input type="text" class="form-control" name="bd_reg_date" value="${board.bd_reg_date}" readonly>
+				<input type="text" class="form-control" name="bd_reg_date" value="${board.bd_reg_date_time_str}" readonly>
 			</div>
 			<div class="form-group">
 				<input type="text" class="form-control" name="bd_views" value="${board.bd_views}" readonly>

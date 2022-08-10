@@ -12,13 +12,12 @@
 	</insert>
 	<select id="selectBoardList"
 		resultType="kr.green.spring.vo.BoardVO">
-		select * from board where bd_del = 'N' order by bd_num
-		desc;
+		select * from board where bd_del = 'N' order by bd_num desc limit #{cri.pageStart}, #{cri.perPageNum};
 	</select>
 	<update id="updateViews">
 		update board
 		set bd_views = bd_views+1
-		where bd_num = #{bd_num}
+		where bd_num = #{bd_num};
 	</update>
 	<select id="selectBoard" resultType="kr.green.spring.vo.BoardVO">
 		select * from board where
@@ -27,11 +26,16 @@
 	<update id="updateBoard">
 		update board set bd_title = #{b.bd_title}, bd_content
 		= #{b.bd_content}, bd_up_date = now()
-		where bd_num = #{b.bd_num}
+		where bd_num = #{b.bd_num};
 	</update>
 	<update id="deleteBoard">
 		update board
 		set bd_del = #{bd_del}
 		where bd_num = #{bd_num}
 	</update>
+	<select id="selectTotalCount" resultType="int">
+		select count(*) from board where bd_del = 'N';
+	</select>
+	
+	
 </mapper>
