@@ -25,8 +25,8 @@
 				<c:forEach items="${list}" var="board">
 					<tr>
 						<td>${board.bd_num}</td>
-						<td>
-							<a href="<%=request.getContextPath()%>/board/select/${board.bd_num}">${board.bd_title }</a>
+						<td><a
+							href="<%=request.getContextPath()%>/board/select/${board.bd_num}">${board.bd_title }</a>
 						</td>
 						<td>${board.bd_me_id }</td>
 						<td>${board.bd_reg_date_str}</td>
@@ -36,8 +36,10 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<a href="<%=request.getContextPath()%>/board/insert"
-			class="btn btn-outline-warning mb-3">글쓰기</a>
+		<c:if test="${user != null}">
+			<a href="<%=request.getContextPath()%>/board/insert"
+				class="btn btn-outline-warning mb-3">글쓰기</a>
+		</c:if>
 	</div>
 </body>
 </html>

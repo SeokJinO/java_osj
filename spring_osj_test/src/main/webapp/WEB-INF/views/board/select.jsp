@@ -36,8 +36,10 @@
 				<textarea class="form-control" rows="10" readonly>${board.bd_content }</textarea>
 			</div>
 			<c:if test="${user != null && user.me_id == board.bd_me_id}">
-			<a href="" class="btn btn-outline-success mb-3">수정</a>
+			<a href="<c:url value="/board/update/${board.bd_num}"></c:url>" class="btn btn-outline-success mb-3">수정</a>
+			<a href="<c:url value="/board/delete/${board.bd_num}"></c:url>" class="btn btn-outline-success mb-3">삭제</a>
 			</c:if>
+			
 			
 		</c:if>
 		<c:if test="${board.bd_del == 'Y' }">
