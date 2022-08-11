@@ -11,7 +11,6 @@ public interface BoardService {
 	void insertBoard(BoardVO board, MemberVO user);
 
 	ArrayList<BoardVO> getBoardList(Criteria cri);
-	
 
 	void updateViews(Integer bd_num);
 
@@ -21,5 +20,6 @@ public interface BoardService {
 
 	void deleteBoard(Integer bd_num, MemberVO user);
 
-	int getTotalCount();
+	int getTotalCount(Criteria cri);
+
 }
