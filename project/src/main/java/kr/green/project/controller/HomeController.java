@@ -17,7 +17,11 @@ public class HomeController {
 	@RequestMapping(value= "/", method=RequestMethod.GET)
 	public ModelAndView home(ModelAndView mv){
 	    mv.setViewName("/main/home");
-	    mv.addObject("setHeader", "타일즈");
+	    return mv;
+	}
+	@RequestMapping(value= "/login", method=RequestMethod.GET)
+	public ModelAndView loginGet(ModelAndView mv){
+	    mv.setViewName("/main/login");
 	    return mv;
 	}
 
