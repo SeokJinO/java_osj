@@ -27,7 +27,7 @@
 	</beans:bean>
 
 	<context:component-scan
-		base-package="kr.green.project.controller" />
+		base-package="kr.green.project.*" />
 	<beans:bean id="tilesViewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 		<beans:property name="viewClass"
