@@ -1,4 +1,4 @@
-package kr.green.project;
+package kr.green.project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
