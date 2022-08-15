@@ -5,6 +5,4 @@
 	<h1>
 		Hello world!  
 	</h1>
-	<P> ${user} </P>
 </div>
-

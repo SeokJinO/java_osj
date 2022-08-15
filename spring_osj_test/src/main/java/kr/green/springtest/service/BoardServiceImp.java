@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.green.springtest.dao.BoardDAO;
+import kr.green.springtest.pagination.Criteria;
 import kr.green.springtest.vo.BoardVO;
 import kr.green.springtest.vo.MemberVO;
 
@@ -16,8 +17,8 @@ public class BoardServiceImp implements BoardService {
 	BoardDAO boardDao;
 
 	@Override
-	public ArrayList<BoardVO> getBoardList() {
-		return boardDao.selectBoardList();
+	public ArrayList<BoardVO> getBoardList(Criteria cri) {
+		return boardDao.selectBoardList(cri);
 	}
 
 	@Override
@@ -75,5 +76,12 @@ public class BoardServiceImp implements BoardService {
 			return;
 		dbBoard.setBd_del("Y");
 		boardDao.updateBoard(dbBoard);
+	}
+
+	@Override
+	public int getTotalCount(Criteria cri) {
+		if(cri == null)
+			return 0;
+		return boardDao.selectTotalCount(cri);
 	}	
 }
