@@ -68,7 +68,7 @@ public class HomeController {
 		mv.setViewName("redirect:/");
 		return mv;
 	}
-	@RequestMapping(value = "/id/check", method=RequestMethod.POST)
+	@RequestMapping(value = "/id/check")
 	@ResponseBody
 	public Map<Object,Object> idCheck(@RequestBody MemberVO member) {
 		HashMap<Object,Object> map = new HashMap<Object,Object>();
@@ -76,6 +76,7 @@ public class HomeController {
 		map.put("check", memberService.idCheck(member));
 		return map;
 	}
+	
 	
 	
 }

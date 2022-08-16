@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import kr.green.springtest.pagination.Criteria;
 import kr.green.springtest.vo.BoardVO;
+import kr.green.springtest.vo.LikesVO;
 import kr.green.springtest.vo.MemberVO;
 
 public interface BoardService {
@@ -22,5 +23,8 @@ public interface BoardService {
 
 	int getTotalCount(Criteria cri);
 
+	String getLikesState(LikesVO likes, MemberVO user);
+
+	LikesVO getLikes(int bd_num, MemberVO user);
 
 }

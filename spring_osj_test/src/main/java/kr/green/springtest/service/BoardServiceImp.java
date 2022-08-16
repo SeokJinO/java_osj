@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import kr.green.springtest.dao.BoardDAO;
 import kr.green.springtest.pagination.Criteria;
 import kr.green.springtest.vo.BoardVO;
+import kr.green.springtest.vo.LikesVO;
 import kr.green.springtest.vo.MemberVO;
 
 @Service
-public class BoardServiceImp implements BoardService {
+public class BoardServiceImp implements BoardService{
 
 	@Autowired
 	BoardDAO boardDao;
@@ -29,40 +30,36 @@ public class BoardServiceImp implements BoardService {
 	@Override
 	public void updateViews(int bd_num) {
 		boardDao.updateViews(bd_num);
-		
 	}
 
 	@Override
 	public void insertBoard(BoardVO board, MemberVO user) {
-		if (board == null)
-			return;
-		//로그인 안한 경우
-		if (user == null || user.getMe_id() == null)
-			return;
+		if(board == null)
+			return ;
+		if(user == null || user.getMe_id() == null)
+			return ;
 		board.setBd_me_id(user.getMe_id());
 		boardDao.insertBoard(board);
-		
 	}
 
 	@Override
 	public void updateBoard(BoardVO board, MemberVO user) {
 		if(board == null || user == null)
-			return;
-		/* - 게시글 번호에 맞는 게시글 정보를 가져옴
+			return ;
+		/*  - 게시글 번호에 맞는 게시글 정보를 가져옴
 		 *  - 게시글이 없으면 종료(삭제된 게시글도 고려)
 		 *  - 게시글의 작성자와 회원 아이디가 같은지 확인하여 다르면 종료
-		 *  - 보드다오에게 게시글 정보를 주고 수정을 시킴
-		 *   */
-		// 이 때 가져온 게시글은 삭제된 게시글도 포함
+		 *  - 보드다오에게 게시글 정보를 주면서 수정하라고 시킴
+		 * */
+		//이 때 가져온 게시글은 삭제된 게시글도 포함
 		BoardVO dbBoard = boardDao.selectBoard(board.getBd_num());
 		if(dbBoard == null || !dbBoard.getBd_del().equals("N"))
 			return;
+		
 		if(!dbBoard.getBd_me_id().equals(user.getMe_id()))
 			return;
 		
 		boardDao.updateBoard(board);
-		
-		
 	}
 
 	@Override
@@ -70,8 +67,10 @@ public class BoardServiceImp implements BoardService {
 		if(user == null)
 			return;
 		BoardVO dbBoard = boardDao.selectBoard(bd_num);
+		
 		if(dbBoard == null || !dbBoard.getBd_del().equals("N"))
 			return;
+		
 		if(!dbBoard.getBd_me_id().equals(user.getMe_id()))
 			return;
 		dbBoard.setBd_del("Y");
@@ -83,5 +82,47 @@ public class BoardServiceImp implements BoardService {
 		if(cri == null)
 			return 0;
 		return boardDao.selectTotalCount(cri);
-	}	
+	}
+
+	@Override
+	public String getLikesState(LikesVO likes, MemberVO user) {
+		if(likes == null || user == null)
+			return "0";
+		
+		likes.setLi_me_id(user.getMe_id());
+		
+		LikesVO dbLikes = boardDao.selectLikes(likes);
+		
+		try {
+			if(dbLikes == null) {
+				boardDao.insertLikes(likes);
+				return ""+likes.getLi_state();//1 or -1 문자열이 리턴
+			}
+			String res;
+			if(likes.getLi_state() == dbLikes.getLi_state()) {
+				dbLikes.setLi_state(0);
+				res = likes.getLi_state() + "0";
+			}else {
+				dbLikes.setLi_state(likes.getLi_state());
+				res = likes.getLi_state() + "";
+			}
+			boardDao.updateLikes(dbLikes);
+			return res;
+			
+		}catch(Exception e) {}
+		finally {
+			boardDao.updateBoardLikes(likes.getLi_bd_num());
+		}
+		return "0";
+	}
+
+	@Override
+	public LikesVO getLikes(int bd_num, MemberVO user) {
+		if(user == null)
+			return null;
+		LikesVO likes = new LikesVO();
+		likes.setLi_bd_num(bd_num);
+		likes.setLi_me_id(user.getMe_id());
+		return boardDao.selectLikes(likes);
+	}
 }
