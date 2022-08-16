@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.green.project.service.MemberService;
+import kr.green.project.vo.MemberVO;
 
 @Controller
 public class HomeController {
@@ -24,6 +25,16 @@ public class HomeController {
 	    mv.setViewName("/main/login");
 	    return mv;
 	}
-
+	@RequestMapping(value= "/login", method=RequestMethod.POST)
+	public ModelAndView loginPost(ModelAndView mv, MemberVO member){
+	    mv.setViewName("redirect:/");
+	    memberService.login(member);
+	    return mv;
+	}
+	@RequestMapping(value= "/signup", method=RequestMethod.GET)
+	public ModelAndView signupGet(ModelAndView mv){
+	    mv.setViewName("/main/signup");
+	    return mv;
+	}
 	
 }
