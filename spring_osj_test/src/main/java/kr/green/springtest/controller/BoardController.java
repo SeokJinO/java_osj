@@ -29,7 +29,6 @@ public class BoardController {
 		ArrayList<BoardVO> list = boardService.getBoardList(cri);
 		int totalCount = boardService.getTotalCount(cri);
 		PageMaker pm = new PageMaker(totalCount, 5, cri);
-		System.out.println(pm);
 		mv.addObject("pm", pm);
 		mv.addObject("list", list);
 		mv.setViewName("/board/list");
@@ -81,5 +80,6 @@ public class BoardController {
 		mv.setViewName("redirect:/board/list");
 		return mv;
 	}
+	
 	
 }

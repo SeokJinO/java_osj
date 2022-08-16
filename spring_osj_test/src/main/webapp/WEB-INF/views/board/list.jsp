@@ -45,7 +45,6 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		&search=${pm.cri.search}&searchType=${pm.cri.searchType}
 		<ul class="pagination justify-content-center">
 			<c:if test="${pm.prev}">
 		    	<li class="page-item"><a class="page-link" href="<c:url value="/board/list?page=${pm.startPage-1}&search=${pm.cri.search}&searchType=${pm.cri.searchType}"></c:url>">이전</a></li>
