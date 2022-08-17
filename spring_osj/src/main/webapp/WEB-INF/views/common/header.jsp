@@ -24,6 +24,9 @@
 				<li class="nav-item">
 					<a class="nav-link" href="<%=request.getContextPath()%>/board/list">게시글</a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="<c:url value="/board/list2"></c:url>">게시글(ajax)</a>
+				</li>
 			</ul>
 		</div>
 			<c:if test="${user != null }">
