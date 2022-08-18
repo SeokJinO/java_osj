@@ -38,6 +38,14 @@ public interface BoardDAO {
 	ArrayList<CommentVO> selectCommentList(@Param("co_bd_num")int co_bd_num, @Param("cri")Criteria cri);
 
 	int selectTotalCountComment(@Param("co_bd_num")int co_bd_num);
+
+	CommentVO selectComment(@Param("co_num")int co_num);
+
+	void deleteComment(@Param("co_num")int co_num);
+
+	void updateComment(@Param("co")CommentVO comment);
+
+	
 	
 	
 
