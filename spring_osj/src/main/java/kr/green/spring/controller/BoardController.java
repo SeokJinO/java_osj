@@ -62,8 +62,8 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/board/select/{bd_num}", method=RequestMethod.GET)
-	public ModelAndView boardSelectGet(ModelAndView mv, @PathVariable("bd_num")Integer bd_num,
-			HttpSession session){
+	public ModelAndView boardSelectGet(ModelAndView mv, 
+			@PathVariable("bd_num")Integer bd_num, HttpSession session){
 		//게시글 번호에 맞는 게시글 조회수를 증가
 		boardService.updateViews(bd_num);
 		//게시글 번호에 맞는 게시글 정보를 가져옴
@@ -74,8 +74,8 @@ public class BoardController {
 		//가져온 게시글을 화면에 전달
 		mv.addObject("board", board);
 		mv.addObject("likes", likes);
-		mv.setViewName("/board/select");
-		return mv;
+    mv.setViewName("/board/select");
+    return mv;
 	}
 	@RequestMapping(value="/board/update/{bd_num}", method=RequestMethod.GET)
 	public ModelAndView boardUpdateGet(ModelAndView mv, @PathVariable("bd_num")Integer bd_num){
@@ -111,26 +111,24 @@ public class BoardController {
     mv.setViewName("redirect:/board/list");
     return mv;
 	}
-	
 	@RequestMapping(value="/board/likes", method=RequestMethod.POST)
 	@ResponseBody
-	public String boardLikes(@RequestBody LikesVO likes) {
-    return boardService.updateLikes(likes);
+	public String boardLikes(@RequestBody LikesVO likes){
+		return boardService.updateLikes(likes);
 	}
 	
 	@RequestMapping(value="/board/list2", method=RequestMethod.GET)
 	public ModelAndView boardList2Get(ModelAndView mv){
-    mv.setViewName("/board/list2");
+		mv.setViewName("/board/list2");
     return mv;
 	}
 	
 	@RequestMapping(value="/ajax/board/list", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<Object, Object> ajaxBoardList(@RequestBody Criteria cri) {
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
+	public Map<Object,Object> ajaxBoardList(@RequestBody Criteria cri){
+		HashMap<Object, Object> map = new HashMap<Object,Object>();
 		cri.setPerPageNum(2);
 		int totalCount = boardService.getTotalCount(cri);
-		//등록된 게시글을 가져옴(여러개)
 		ArrayList<BoardVO> list = boardService.getBoardList(cri);
 		PageMaker pm = new PageMaker(cri, 5, totalCount);
 		map.put("list", list);
@@ -139,8 +137,9 @@ public class BoardController {
 	}
 	@RequestMapping(value="/ajax/comment/insert", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<Object, Object> ajaxCommentInsert(@RequestBody CommentVO comment, HttpSession session) {
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
+	public Map<Object,Object> ajaxCommentInsert(@RequestBody CommentVO comment,
+			HttpSession session){
+		HashMap<Object, Object> map = new HashMap<Object,Object>();
 		MemberVO user = (MemberVO) session.getAttribute("user");
 		String res = boardService.insertComment(comment, user);
 		map.put("res", res);
@@ -148,33 +147,36 @@ public class BoardController {
 	}
 	@RequestMapping(value="/ajax/comment/list/{co_bd_num}", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<Object, Object> ajaxCommentList(@RequestBody Criteria cri, @PathVariable("co_bd_num")int co_bd_num) {
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
+	public Map<Object,Object> ajaxCommentList(@RequestBody Criteria cri, 
+			@PathVariable("co_bd_num")int co_bd_num){
+		HashMap<Object, Object> map = new HashMap<Object,Object>();
 		ArrayList<CommentVO> list = boardService.getCommentList(co_bd_num, cri);
 		
 		int totalCount = boardService.getTotalCountComment(co_bd_num);
-		PageMaker pm = new PageMaker(cri, 5 ,totalCount);
+		PageMaker pm = new PageMaker(cri, 5, totalCount);
 		map.put("pm", pm);
 		map.put("list", list);
 		return map;
 	}
 	@RequestMapping(value="/ajax/comment/delete", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<Object, Object> ajaxCommentDelete(@RequestBody CommentVO comment, HttpSession session) {
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
+	public Map<Object,Object> ajaxCommentDelete(@RequestBody CommentVO comment,
+			HttpSession session){
+		HashMap<Object, Object> map = new HashMap<Object,Object>();
 		MemberVO user = (MemberVO) session.getAttribute("user");
 		boolean res = boardService.deleteComment(comment, user);
 		map.put("res", res);
 		return map;
 	}
+	
 	@RequestMapping(value="/ajax/comment/update", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<Object, Object> ajaxCommentUpdate(@RequestBody CommentVO comment, HttpSession session) {
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
+	public Map<Object,Object> ajaxCommentUpdate(@RequestBody CommentVO comment,
+			HttpSession session){
+		HashMap<Object, Object> map = new HashMap<Object,Object>();
 		MemberVO user = (MemberVO) session.getAttribute("user");
 		boolean res = boardService.updateComment(comment, user);
 		map.put("res", res);
 		return map;
 	}
-	
 }

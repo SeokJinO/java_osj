@@ -6,11 +6,11 @@
   <insert id="insertBoard">
   	insert into board(bd_title, bd_content, bd_me_id, bd_ori_num, bd_depth, bd_order)
   	<if test="b.bd_ori_num == 0">
-		select #{b.bd_title}, #{b.bd_content}, #{b.bd_me_id}, ifnull(max(bd_num),0) + 1,
-		1, 1 from board 
+		select #{b.bd_title}, #{b.bd_content}, #{b.bd_me_id}, ifnull(max(bd_num),0) + 1, 
+			1, 1 from board
 		</if>
 		<if test="b.bd_ori_num != 0">
-		values (#{b.bd_title}, #{b.bd_content}, #{b.bd_me_id}, #{b.bd_ori_num}, #{b.bd_depth}+1, #{b.bd_order}+1)
+		values(#{b.bd_title}, #{b.bd_content}, #{b.bd_me_id}, #{b.bd_ori_num}, #{b.bd_depth}+1, #{b.bd_order}+1) 
 		</if>
   </insert>
   
@@ -22,13 +22,13 @@
   	select * from board 
   		where bd_del = 'N' 
   		<if test="cri.searchType == 'all'">
-  			and (bd_title like concat('%', #{cri.search} ,'%') or bd_me_id like concat('%',#{cri.search} ,'%'))
+  		and (bd_title like concat('%', #{cri.search} ,'%') or bd_me_id like concat('%',#{cri.search} ,'%'))
   		</if>
   		<if test="cri.searchType != 'all'">
-  			and ${cri.searchType} like concat('%',#{cri.search} ,'%')
+  		and ${cri.searchType} like concat('%',#{cri.search} ,'%')
   		</if>
   		<if test="cri.column != 'bd_num'">
-  			order by ${cri.column} ${cri.orderBy}  		
+  			order by ${cri.column} ${cri.orderBy}
   		</if>
   		<if test="cri.column == 'bd_num'">
   			order by bd_ori_num ${cri.orderBy}, bd_order asc
@@ -74,26 +74,28 @@
   	update likes set li_state = #{li.li_state} where li_num = #{li.li_num}
   </update>
   <update id="updateBoardLikes">
-  	update board set 
-	bd_up = (select count(*) from likes where li_bd_num =#{bd_num} and li_state = 1),
-	bd_down = (select count(*) from likes where li_bd_num = #{bd_num} and li_state = -1)
-    where bd_num = #{bd_num};
+  	update board set
+			bd_up = (select count(*) from likes where li_bd_num = #{bd_num} and li_state = 1),
+	    bd_down = (select count(*) from likes where li_bd_num = #{bd_num} and li_state = -1)
+		where bd_num = #{bd_num}
   </update>
   <insert id="insertComment">
-  	insert into comments(co_me_id, co_content, co_bd_num, co_ori_num, co_depth, co_order)
-  		<if test="co.co_ori_num == 0">
-  			select #{co.co_me_id} , #{co.co_content} , #{co.co_bd_num} , ifnull(max(co_num),0) + 1 , 1, 1 from comments
-  		</if>
-  		<if test="co.co_ori_num != 0">
-  			values (#{co.co_me_id}, #{co.co_content}, #{co.co_bd_num}, #{co.co_ori_num}, #{co.co_depth}+1, #{co.co_order}+1)
-  		</if>
+  	insert into comments(co_me_id, co_content, co_bd_num, co_ori_num, co_depth, co_order) 
+  	<if test="co.co_ori_num == 0">
+  		select #{co.co_me_id}, #{co.co_content}, #{co.co_bd_num}, ifnull(max(co_num),0) + 1, 1, 1 from comments
+  	</if>
+  	<if test="co.co_ori_num != 0">
+  		values(#{co.co_me_id}, #{co.co_content}, #{co.co_bd_num}, 
+  			#{co.co_ori_num}, #{co.co_depth}+1, #{co.co_order}+1)
+  	</if>
   </insert>
   <update id="updateCommentOrder">
-  	update comments set co_order = co_order+1 where co_ori_num = #{co.bd_ori_num} and co_order > #{co.bd_order}
+  	update comments set co_order = co_order+1 where co_ori_num = #{co.co_ori_num} and co_order > #{co.co_order}
   </update>
+  
   <select id="selectCommentList" resultType="kr.green.spring.vo.CommentVO">
-  	select * from comments where co_bd_num = #{co_bd_num} order by co_ori_num desc, co_order asc
-  		limit #{cri.pageStart}, #{cri.perPageNum};
+  	select * from comments where co_bd_num = #{co_bd_num} order by co_ori_num desc, co_order asc 
+  	limit #{cri.pageStart}, #{cri.perPageNum}
   </select>
   <select id="selectTotalCountComment" resultType="int">
   	select count(*) from comments where co_bd_num = #{co_bd_num}
