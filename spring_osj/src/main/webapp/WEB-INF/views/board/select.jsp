@@ -50,7 +50,9 @@
 			<a href="<%=request.getContextPath()%>/board/update/${board.bd_num}" class="btn btn-outline-danger mb-3" >수정</a>
 			<a href="<%=request.getContextPath()%>/board/delete/${board.bd_num}" class="btn btn-outline-danger mb-3" >삭제</a>
 			</c:if>
-			
+			<c:if test="${user.me_id != board.bd_me_id }">
+				<a href="<%=request.getContextPath()%>/board/insert?bd_ori_num=${board.bd_ori_num}&bd_depth=${board.bd_depth}" class="btn btn-outline-success">답글</a>
+			</c:if>
 			
 		</c:if>
 		<c:if test="${board != null && 'A'.charAt(0) == board.bd_del }">
@@ -112,9 +114,23 @@
 		})
 		
 		$(function(){
+			// 댓글 등록 버튼 클릭
 			$('.btn-comment-insert').click(function(){
 				let co_content = $('[name=co_content]').val();
 				let co_bd_num = '${board.bd_num}';
+				
+				if('${user.me_id}' == ''){
+					if(confirm('로그인한 회원만 댓글 작성이 가능합니다. 로그인 하겠습니까?')){
+						let href = location.href;
+						let contetxPath = '<%=request.getContextPath()%>'; //spring
+						let index = href.indexOf(contetxPath);
+						let redirectURI = href.substring(index);
+						console.log(redirectURI)
+						location.href = '<%=request.getContextPath()%>/login';
+						return;
+					}
+				}
+				
 				let obj = {
 						co_content : co_content,
 						co_bd_num : co_bd_num
@@ -208,6 +224,14 @@
 				$('.btn-comment-update-cancle').remove();
 				$('.btn-comment-update-complete').remove();
 			})
+			
+			$(document).on('click','.btn-comment-reply',function(){
+				let str = '<br><textarea class="co_content_reply"></textarea><br>'
+				str += '<button class="btn-insert-reply">답글 등록</button>'
+					str += '<button class="btn-cancle-reply">답글 취소</button>'
+				$(this).after(str);
+				$(this).hide();
+			})
 		})
 		
 		function getCommentList(cri, bd_num){
@@ -234,6 +258,7 @@
 							'<button class="btn-comment-update">수정</button>';
 							} 
 							str +=
+								'<button class="btn-comment-reply">답글</button>' +
 						'</div>'
 					}
 					$('.list-comment').html(str);
