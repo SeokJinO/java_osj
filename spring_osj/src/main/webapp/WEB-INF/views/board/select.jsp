@@ -51,7 +51,7 @@
 			<a href="<%=request.getContextPath()%>/board/delete/${board.bd_num}" class="btn btn-outline-danger mb-3" >삭제</a>
 			</c:if>
 			<c:if test="${user.me_id != board.bd_me_id }">
-				<a href="<%=request.getContextPath()%>/board/insert?bd_ori_num=${board.bd_ori_num}&bd_depth=${board.bd_depth}" class="btn btn-outline-success">답글</a>
+				<a href="<%=request.getContextPath()%>/board/insert?bd_ori_num=${board.bd_ori_num}&bd_depth=${board.bd_depth}&bd_order=${board.bd_order}" class="btn btn-outline-success">답글</a>
 			</c:if>
 			
 		</c:if>
@@ -224,13 +224,41 @@
 				$('.btn-comment-update-cancle').remove();
 				$('.btn-comment-update-complete').remove();
 			})
-			
+			// 답글 버튼 클릭
 			$(document).on('click','.btn-comment-reply',function(){
 				let str = '<br><textarea class="co_content_reply"></textarea><br>'
 				str += '<button class="btn-insert-reply">답글 등록</button>'
 					str += '<button class="btn-cancle-reply">답글 취소</button>'
 				$(this).after(str);
 				$(this).hide();
+			})
+			//답글 등록버튼 클릭
+			$(document).on('click', '.btn-insert-reply',function(){
+				// co_ori_num, co_depth, co_order
+				let co_ori_num = $(this).siblings('[name=co_ori_num]').val();
+				let co_depth = $(this).siblings('[name=co_depth]').val();
+				let co_order = $(this).siblings('[name=co_order]').val();
+				let co_content = $(this).siblings('.co_content_reply').val();
+				let co_bd_num = '${board.bd_num}';
+				let obj = {
+						co_ori_num : co_ori_num,
+						co_depth : co_depth,
+						co_order : co_order,
+						co_content : co_content,
+						co_bd_num : co_bd_num
+				}
+
+				$.ajax({
+					async:true, 
+					type:'POST',
+					data: JSON.stringify(obj),
+					url: '<%=request.getContextPath()%>/ajax/comment/insert',
+					dataType:"json", 
+					contentType:"application/json; charset=UTF-8", 
+					success : function(data){
+						
+					}
+				})
 			})
 		})
 		
@@ -249,9 +277,19 @@
 						str +=
 						'<div class="item-comment">' +
 							'<div class="co_me_id"><b>'+co.co_me_id+'</b></div>' +
-							'<div class="co_content">'+co.co_content+'</div>' +
+							'<div class="co_content">'
+							for(i = 2; i<=co.co_depth; i++)
+								str += '&nbsp;&nbsp;&nbsp;';
+							if(co.co_depth > 1)
+								str += 'ㄴ';
+								str+= 
+									co.co_content+'</div>' +
+							
 							'<div class="co_reg_date">'+co.co_reg_date_str+'</div>' +
-							'<input value="'+co.co_num+'" name="co_num" type="hidden">';
+							'<input value="'+co.co_num+'" name="co_num" type="hidden">'+
+							'<input value="'+co.co_ori_num+'" name="co_ori_num" type="hidden">'+
+							'<input value="'+co.co_depth+'" name="co_depth" type="hidden">'+
+							'<input value="'+co.co_order+'" name="co_order" type="hidden">';
 							if(co.co_me_id == '${user.me_id}'){
 								str +=
 							'<button class="btn-comment-delete">삭제</button>' +

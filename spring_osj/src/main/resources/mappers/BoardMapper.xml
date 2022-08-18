@@ -4,15 +4,19 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.green.spring.dao.BoardDAO">
   <insert id="insertBoard">
-  	insert into board(bd_title, bd_content, bd_me_id, bd_ori_num, bd_depth)
+  	insert into board(bd_title, bd_content, bd_me_id, bd_ori_num, bd_depth, bd_order)
   	<if test="b.bd_ori_num == 0">
-		select #{b.bd_title}, #{b.bd_content}, #{b.bd_me_id}, ifnull(max(bd_num),0) + 1, 
+		select #{b.bd_title}, #{b.bd_content}, #{b.bd_me_id}, ifnull(max(bd_num),0) + 1,
+		1, 1 from board 
 		</if>
 		<if test="b.bd_ori_num != 0">
-		values (#{b.bd_title}, #{b.bd_content}, #{b.bd_me_id}, #{b.bd_ori_num},#{b.bd_depth})
+		values (#{b.bd_title}, #{b.bd_content}, #{b.bd_me_id}, #{b.bd_ori_num}, #{b.bd_depth}+1, #{b.bd_order}+1)
 		</if>
-
   </insert>
+  
+  <update id="updateBoardOrder">
+  	update board set bd_order = bd_order+1 where bd_ori_num = #{bo.bd_ori_num} and bd_order > #{bo.bd_order}
+  </update>
   
   <select id="selectBoardList" resultType="kr.green.spring.vo.BoardVO">
   	select * from board 
@@ -27,7 +31,7 @@
   			order by ${cri.column} ${cri.orderBy}  		
   		</if>
   		<if test="cri.column == 'bd_num'">
-  			order by bd_ori_num ${cri.orderBy}, bd_depth asc, bd_num asc
+  			order by bd_ori_num ${cri.orderBy}, bd_order asc
   		</if>
   		limit #{cri.pageStart}, #{cri.perPageNum}
   </select>
@@ -76,11 +80,19 @@
     where bd_num = #{bd_num};
   </update>
   <insert id="insertComment">
-  	insert into comments(co_me_id, co_content, co_bd_num, co_ori_num, co_depth)
-  		select #{co.co_me_id} , #{co.co_content} , #{co.co_bd_num} , ifnull(max(co_num),0) + 1 , 1 from comments
+  	insert into comments(co_me_id, co_content, co_bd_num, co_ori_num, co_depth, co_order)
+  		<if test="co.co_ori_num == 0">
+  			select #{co.co_me_id} , #{co.co_content} , #{co.co_bd_num} , ifnull(max(co_num),0) + 1 , 1, 1 from comments
+  		</if>
+  		<if test="co.co_ori_num != 0">
+  			values (#{co.co_me_id}, #{co.co_content}, #{co.co_bd_num}, #{co.co_ori_num}, #{co.co_depth}+1, #{co.co_order}+1)
+  		</if>
   </insert>
+  <update id="updateCommentOrder">
+  	update comments set co_order = co_order+1 where co_ori_num = #{co.bd_ori_num} and co_order > #{co.bd_order}
+  </update>
   <select id="selectCommentList" resultType="kr.green.spring.vo.CommentVO">
-  	select * from comments where co_bd_num = #{co_bd_num} order by co_num desc
+  	select * from comments where co_bd_num = #{co_bd_num} order by co_ori_num desc, co_order asc
   		limit #{cri.pageStart}, #{cri.perPageNum};
   </select>
   <select id="selectTotalCountComment" resultType="int">
