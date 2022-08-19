@@ -33,13 +33,13 @@
 			  <textarea class="form-control" rows="10" name="bd_content" readonly>${board.bd_content}</textarea>
 			</div>
 			<div class="form-group">
-				<label>첨부파일</label>
-				<c:if test="${fileList.size() == 0}">없음</c:if>
-				<c:if test="${fileList.size() != 0}">
-					<c:forEach items="${fileList}" var="file">					
-						<a href="<c:url value="/file${file.fi_name}"></c:url>" class="form-control" download>${file.fi_ori_name}</a>
-					</c:forEach>
-				</c:if>
+			  <label>첨부파일</label>
+			  <c:if test="${fileList.size() == 0 }">없음</c:if>
+			  <c:if test="${fileList.size() != 0 }">
+			  	<c:forEach items="${fileList}" var="file">
+				  	<a href="<c:url value="/file${file.fi_name}"></c:url>" class="form-control" download="${file.fi_ori_name}">${file.fi_ori_name}</a>
+			  	</c:forEach>
+			  </c:if>
 			</div>
 			<div class="list-comment">
 				<div class="item-comment">
@@ -189,9 +189,9 @@
 			let str = '<textarea class="co_content2">'+co_content+'</textarea>';
 			$(this).siblings('.co_content').after(str);
 			$(this).siblings('.co_content').hide();
-			$(this).hide(); // 수정버튼 하이드
-			$(this).siblings('.btn-comment-delete').hide(); // 삭제버튼 하이드
-			$(this).siblings('.btn-comment-reply').hide(); // 답글버튼 하이드
+			$(this).hide();//수정버튼 감춤
+			$(this).siblings('.btn-comment-delete').hide();//삭제버튼 감춤
+			$(this).siblings('.btn-comment-reply').hide();//답글버튼 갑춤
 			str = '<button class="btn-comment-update-complete">수정완료</button>'
 			str += '<button class="btn-comment-update-cancel">취소</button>';
 			$(this).parent().append(str);
@@ -226,9 +226,9 @@
 			//기존 댓글 내용이 입력창으로 바뀌어야 함
 			$(this).siblings('.co_content').show();
 			$(this).siblings('.co_content2').remove();
-			$(this).siblings('.btn-comment-update').show(); // 수정버튼 보임
-			$(this).siblings('.btn-comment-delete').show(); // 삭제버튼 보임
-			$(this).siblings('.btn-comment-reply').show();  // 답글버튼 보임
+			$(this).siblings('.btn-comment-update').show();//수정버튼 보임
+			$(this).siblings('.btn-comment-delete').show();//삭제버튼 보임
+			$(this).siblings('.btn-comment-reply').show();//답글버튼 보임
 			$('.btn-comment-update-cancel').remove();
 			$('.btn-comment-update-complete').remove();
 		})
@@ -236,22 +236,21 @@
 		$(document).on('click', '.btn-comment-reply', function(){
 			let id = '${user.me_id}';
 			if(id == ''){
-				if(confirm('댓글 답글은 로그인을 해야합니다. 로그인을 하시겠습니까?')){
+				if(confirm('댓글 답글은 로그인을 해야 합니다. 로그인을 하시겠습니까?')){
 					location.href = '<%=request.getContextPath()%>/login'
 					return;
 				}
 			}
-			
-			 // 답글을 누른 댓글에만 답글을 입력하는 창이 나오도록
+			//답글을 누른 댓글에만 답글을 입력하는 창이 나오게 하기 위해 모든 답글취소버튼을 클릭해서 없애줌
 			$('.btn-cancel-reply').click();
 			$('.btn-comment-update-cancel').click();
 			let str = '<br><textarea class="co_content_reply"></textarea><br>';
 			str += '<button class="btn-insert-reply">답글 등록</button>'
 				str += '<button class="btn-cancel-reply">답글 취소</button>'
 			$(this).after(str);
-			$(this).hide(); //답글버튼 하이드
-			$(this).siblings('.btn-comment-update').hide(); // 수정버튼 하이드
-			$(this).siblings('.btn-comment-delete').hide(); // 삭제버튼 하이드
+			$(this).hide();//답변버튼 감춤
+			$(this).siblings('.btn-comment-update').hide();//수정버튼 감춤
+			$(this).siblings('.btn-comment-delete').hide();//삭제버튼 감춤
 		})
 		//답글 등록버튼 클릭
 		$(document).on('click', '.btn-insert-reply', function(){
@@ -282,16 +281,16 @@
 		    }
 		  });
 		})
-		// 답글 취소 버튼 클릭
-		$(document).on('click','.btn-cancel-reply',function(){
+		//답글취소버튼 클릭
+		$(document).on('click', '.btn-cancel-reply', function(){
 			$(this).siblings('.co_content_reply').remove();
 			$(this).siblings('.btn-insert-reply').remove();
 			$(this).siblings('br').remove();
-			$(this).siblings('.btn-comment-reply').show();
-			$(this).siblings('.btn-comment-update').show(); // 수정버튼 보임
-			$(this).siblings('.btn-comment-delete').show(); // 삭제버튼 보임
+			$(this).siblings('.btn-comment-reply').show();//답글 보임
+			$(this).siblings('.btn-comment-update').show();//수정버튼 보임
+			$(this).siblings('.btn-comment-delete').show();//삭제버튼 보임
 			$(this).remove();
-		})
+		});
 	})
 	
 	
