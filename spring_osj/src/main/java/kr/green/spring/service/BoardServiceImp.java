@@ -11,9 +11,9 @@ import kr.green.spring.pagination.Criteria;
 import kr.green.spring.utils.UploadFileUtils;
 import kr.green.spring.vo.BoardVO;
 import kr.green.spring.vo.CommentVO;
+import kr.green.spring.vo.FileVO;
 import kr.green.spring.vo.LikesVO;
 import kr.green.spring.vo.MemberVO;
-import kr.green.spring.vo.FileVO;
 
 @Service
 public class BoardServiceImp implements BoardService {
@@ -22,7 +22,7 @@ public class BoardServiceImp implements BoardService {
 	BoardDAO boardDao;
 	
 	private String uploadPath = "C:\\Users\\disse\\Desktop\\git\\uploadfiles";
-	
+
 	@Override
 	public void insertBoard(BoardVO board, MemberVO user, MultipartFile[] files) {
 		if(board == null || board.getBd_title() == null || board.getBd_content() == null)
@@ -51,20 +51,19 @@ public class BoardServiceImp implements BoardService {
 			if(file == null)
 				continue;
 			
-			String fi_ori_name = file.getOriginalFilename(); 
+			String fi_ori_name = file.getOriginalFilename();
 			if(fi_ori_name.length() == 0)
 				continue;
 			
 			try {
-				
 				String fi_name = UploadFileUtils.uploadFile(uploadPath, fi_ori_name, file.getBytes());
 				FileVO fileVo = new FileVO(fi_name, fi_ori_name, board.getBd_num());
-				System.out.println(fileVo);
+				boardDao.insertFile(fileVo);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
 			
+		}
 	}
 
 	@Override
@@ -148,24 +147,24 @@ public class BoardServiceImp implements BoardService {
 		//조회 => 로그인한 사용자가 해당 게시물에 한 추천/비추천 정보를 가져옴
 		LikesVO dbLikes = boardDao.selectLikes(likes);
 		try {
-			//해당 게시물에 추천/비추천이 처음이라면 insert
+			//해당 게시물에 추천/비추천이 처음이면 insert
 			if(dbLikes == null) {
 				boardDao.insertLikes(likes);
 				return ""+likes.getLi_state();
-				//이전 한적이 있으면 update
+			//이전 한적이 있으면 update
 			}else {
 				//이전 추천/비추천 상태와 현재 추천/비추천 상태가 다른 경우
 				//이전 추천=> 현재 비추천, 이전 비추천=> 현재 추천
 				if(dbLikes.getLi_state() != likes.getLi_state()) {
 					dbLikes.setLi_state(likes.getLi_state());
 				}
-				//이전 추천/비추천 상태와 현재와 같은 경우 => 상태가 0
+				//이전 추천/비추천 상태가 현재와 같은 경우 => 상태가 0
 				//이전 추천=> 현재 추천, 이전 비추천=> 현재 비추천
 				else {
 					dbLikes.setLi_state(0);
 				}
 				boardDao.updateLikes(dbLikes);
-				return likes.getLi_state()+(dbLikes.getLi_state() == 0 ? "0" : ""); // -10, 10
+				return likes.getLi_state()+(dbLikes.getLi_state() == 0 ? "0" : "");//-10, 10
 			}
 		}catch(Exception e) {}
 		finally {
@@ -178,6 +177,7 @@ public class BoardServiceImp implements BoardService {
 	public LikesVO getLikes(BoardVO board, MemberVO user) {
 		if(board == null || board.getBd_del() != 'N')
 			return null;
+		
 		if(user == null)
 			return null;
 		LikesVO likes = new LikesVO();
@@ -188,21 +188,22 @@ public class BoardServiceImp implements BoardService {
 
 	@Override
 	public String insertComment(CommentVO comment, MemberVO user) {
-		if(comment == null || comment.getCo_content() == null)
+		if(comment == null || comment.getCo_content() == null) 
 			return "댓글 정보가 없습니다.";
-		if(user == null) 
-			return "로그인한 회원만 댓글 작성이 가능합니다.";
-		BoardVO board = boardDao.selectBoard(comment.getCo_bd_num());
 		
-		if(board == null || board.getBd_del() != 'N')
-			return "잘못된 게시글입니다.";
+		if(user == null)
+			return "로그인한 회원만 댓글 작성이 가능합니다.";
+		
+		BoardVO board = boardDao.selectBoard(comment.getCo_bd_num()); 
+		if( board == null || board.getBd_del() != 'N')
+			return "잘못된 게시글입니다. 댓글을 작성할 수 없습니다.";
 		
 		if(comment.getCo_ori_num() != 0)
 			boardDao.updateCommentOrder(comment);
 		
 		comment.setCo_me_id(user.getMe_id());
-		
 		boardDao.insertComment(comment);
+			
 		return "댓글을 등록했습니다.";
 	}
 
@@ -225,13 +226,12 @@ public class BoardServiceImp implements BoardService {
 		
 		//로그인한 사용자가 작성한 댓글인지 아닌지 확인하는 작업
 		CommentVO dbComment = boardDao.selectComment(comment.getCo_num());
-		System.out.println(dbComment);
 		if(dbComment == null || !dbComment.getCo_me_id().equals(user.getMe_id()))
 			return false;
 		
 		boardDao.deleteComment(comment.getCo_num());
-		return true;
 		
+		return true;
 	}
 
 	@Override
@@ -241,11 +241,18 @@ public class BoardServiceImp implements BoardService {
 		
 		//로그인한 사용자가 작성한 댓글인지 아닌지 확인하는 작업
 		CommentVO dbComment = boardDao.selectComment(comment.getCo_num());
-		System.out.println(dbComment);
 		if(dbComment == null || !dbComment.getCo_me_id().equals(user.getMe_id()))
 			return false;
 		
 		boardDao.updateComment(comment);
+		
 		return true;
+	}
+
+	@Override
+	public ArrayList<FileVO> getFileList(Integer bd_num) {
+		if(bd_num == null)
+			return null;
+		return boardDao.selectFileList(bd_num);
 	}
 }

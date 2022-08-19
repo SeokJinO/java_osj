@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import kr.green.spring.pagination.Criteria;
 import kr.green.spring.vo.BoardVO;
 import kr.green.spring.vo.CommentVO;
+import kr.green.spring.vo.FileVO;
 import kr.green.spring.vo.LikesVO;
 
 public interface BoardDAO {
@@ -49,8 +50,8 @@ public interface BoardDAO {
 
 	void updateCommentOrder(@Param("co")CommentVO comment);
 
-	
-	
-	
+	void insertFile(@Param("fi")FileVO fileVo);
+
+	ArrayList<FileVO> selectFileList(@Param("bd_num")Integer bd_num);
 
 }
