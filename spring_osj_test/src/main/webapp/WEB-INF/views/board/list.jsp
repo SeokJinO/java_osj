@@ -62,5 +62,17 @@
 				class="btn btn-outline-warning mb-3">글쓰기</a>
 		</c:if>
 	</div>
+	<script type="text/javascript">
+	$(function(){
+		$('.btn-board-insert').click(function(e){
+			if('${user.me_id}' == ''){
+				if(confirm('회원만 가능합니다. 로그인 페이지로 이동하겠습니까?')){
+					e.preventDefault();
+					location.href = '<%=request.getContextPath()%>/login'
+				}
+			}
+		})
+	})
+	</script>
 </body>
 </html>
