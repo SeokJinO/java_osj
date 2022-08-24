@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import kr.green.springtest.dao.BoardDAO;
 import kr.green.springtest.pagination.Criteria;
 import kr.green.springtest.vo.BoardVO;
+import kr.green.springtest.vo.CommentVO;
 import kr.green.springtest.vo.LikesVO;
 import kr.green.springtest.vo.MemberVO;
 
@@ -124,5 +125,56 @@ public class BoardServiceImp implements BoardService{
 		likes.setLi_bd_num(bd_num);
 		likes.setLi_me_id(user.getMe_id());
 		return boardDao.selectLikes(likes);
+	}
+
+	@Override
+	public boolean insertComment(CommentVO comment, MemberVO user) {
+		if(comment == null || user == null)
+			return false;
+		comment.setCo_me_id(user.getMe_id());
+		boardDao.insertComment(comment);
+		return true;
+	}
+
+	@Override
+	public ArrayList<CommentVO> getCommentList(int bd_num, Criteria cri) {
+		if(cri == null)
+			return null;
+		
+		BoardVO board = boardDao.selectBoard(bd_num);
+		if(board == null || !board.getBd_del().equals("N") )
+			return null;
+		
+		return boardDao.selectCommetList(bd_num, cri);
+	}
+
+	@Override
+	public int getCommentTotalCount(int bd_num) {
+		BoardVO board = boardDao.selectBoard(bd_num);
+		if(board == null || !board.getBd_del().equals("N") )
+			return 0;
+		return boardDao.selectCommentTotalCount(bd_num);
+	}
+
+	@Override
+	public boolean deleteComment(MemberVO user, CommentVO comment) {
+		if(user == null || comment == null)
+			return false;
+		CommentVO dbComment = boardDao.selectComment(comment.getCo_num());
+		if(dbComment == null || !dbComment.getCo_me_id().equals(user.getMe_id()))
+			return false;
+		boardDao.deleteComment(comment.getCo_num());
+		return true;
+	}
+
+	@Override
+	public boolean updateComment(MemberVO user, CommentVO comment) {
+		if(user == null || comment == null)
+			return false;
+		CommentVO dbComment = boardDao.selectComment(comment.getCo_num());
+		if(dbComment == null || !dbComment.getCo_me_id().equals(user.getMe_id()))
+			return false;
+		boardDao.updateComment(comment);
+		return true;
 	}
 }
