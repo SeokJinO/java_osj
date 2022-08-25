@@ -20,9 +20,9 @@ public class BoardServiceImp implements BoardService{
 
 	@Autowired
 	BoardDAO boardDao;
-	
+
 	String uploadPath = "C:\\Users\\disse\\Desktop\\git\\uploadfiles";
-	
+
 	@Override
 	public ArrayList<BoardVO> getBoardList(Criteria cri) {
 		return boardDao.selectBoardList(cri);
@@ -41,9 +41,9 @@ public class BoardServiceImp implements BoardService{
 	@Override
 	public void insertBoard(BoardVO board, MemberVO user, MultipartFile[] files) {
 		if(board == null)
-			return;
+			return ;
 		if(user == null || user.getMe_id() == null)
-			return;
+			return ;
 		board.setBd_me_id(user.getMe_id());
 		boardDao.insertBoard(board);
 		
@@ -51,22 +51,12 @@ public class BoardServiceImp implements BoardService{
 			return;
 		}
 		for(MultipartFile tmp : files) {
-			String fi_ori_name = tmp.getOriginalFilename();
-			if(tmp == null || fi_ori_name == null || fi_ori_name.length() == 0)
-				continue;
-			
-			try {
-				String fi_name = UploadFileUtils.uploadFile(uploadPath, tmp.getOriginalFilename(), tmp.getBytes());	
-				FileVO file = new FileVO(fi_name, fi_ori_name, board.getBd_num());
-				boardDao.insertFile(file);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
+			insertFile(tmp, board.getBd_num());			
 		}
 	}
 
 	@Override
-	public void updateBoard(BoardVO board, MemberVO user) {
+	public void updateBoard(BoardVO board, MemberVO user, MultipartFile[] files, int[] nums) {
 		if(board == null || user == null)
 			return ;
 		/*  - 게시글 번호에 맞는 게시글 정보를 가져옴
@@ -83,6 +73,19 @@ public class BoardServiceImp implements BoardService{
 			return;
 		
 		boardDao.updateBoard(board);
+		
+		if(files != null && files.length != 0) {
+			for(MultipartFile tmp : files) {
+				insertFile(tmp, board.getBd_num());			
+			}
+		}
+		
+		if(nums == null || nums.length == 0)
+			return;
+		for(int fi_num : nums) {
+			FileVO file = boardDao.selectFile(fi_num);
+			deleteFile(file);
+		}
 	}
 
 	@Override
@@ -98,6 +101,13 @@ public class BoardServiceImp implements BoardService{
 			return;
 		dbBoard.setBd_del("Y");
 		boardDao.updateBoard(dbBoard);
+		
+		ArrayList<FileVO> fileList = boardDao.selectFileList(bd_num);
+		if(fileList == null || fileList.size() == 0)
+			return ;
+		for(FileVO tmp : fileList) {
+			deleteFile(tmp);
+		}
 	}
 
 	@Override
@@ -179,8 +189,8 @@ public class BoardServiceImp implements BoardService{
 	}
 
 	@Override
-	public boolean deleteComment(MemberVO user, CommentVO comment) {
-		if(user == null || comment == null)
+	public boolean deleteComment(CommentVO comment, MemberVO user) {
+		if(comment == null || user == null)
 			return false;
 		CommentVO dbComment = boardDao.selectComment(comment.getCo_num());
 		if(dbComment == null || !dbComment.getCo_me_id().equals(user.getMe_id()))
@@ -190,13 +200,38 @@ public class BoardServiceImp implements BoardService{
 	}
 
 	@Override
-	public boolean updateComment(MemberVO user, CommentVO comment) {
-		if(user == null || comment == null)
+	public boolean updateComment(CommentVO comment, MemberVO user) {
+		if(comment == null || user == null)
 			return false;
+		
 		CommentVO dbComment = boardDao.selectComment(comment.getCo_num());
 		if(dbComment == null || !dbComment.getCo_me_id().equals(user.getMe_id()))
 			return false;
 		boardDao.updateComment(comment);
 		return true;
+	}
+
+	@Override
+	public ArrayList<FileVO> getFileList(int bd_num) {
+		return boardDao.selectFileList(bd_num);
+	}
+	
+	private void insertFile(MultipartFile tmp, int bd_num) {
+		String fi_ori_name = tmp.getOriginalFilename(); 
+		if(tmp == null || fi_ori_name == null || fi_ori_name.length() == 0)
+			return;
+		
+		try {
+			String fi_name = UploadFileUtils.uploadFile(uploadPath, fi_ori_name, tmp.getBytes());
+			
+			FileVO file = new FileVO(fi_name, fi_ori_name, bd_num);
+			boardDao.insertFile(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private void deleteFile(FileVO tmp) {
+		UploadFileUtils.deleteFile(uploadPath, tmp.getFi_name());
+		boardDao.deleteFile(tmp.getFi_num());
 	}
 }

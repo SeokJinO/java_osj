@@ -9,7 +9,6 @@ import kr.green.springtest.vo.BoardVO;
 import kr.green.springtest.vo.CommentVO;
 import kr.green.springtest.vo.FileVO;
 import kr.green.springtest.vo.LikesVO;
-import kr.green.springtest.vo.MemberVO;
 
 public interface BoardDAO {
 
@@ -47,6 +46,10 @@ public interface BoardDAO {
 
 	void insertFile(@Param("fi")FileVO file);
 
+	ArrayList<FileVO> selectFileList(@Param("bd_num")int bd_num);
 
+	void deleteFile(@Param("fi_num")int fi_num);
+
+	FileVO selectFile(@Param("fi_num")int fi_num);
 
 }

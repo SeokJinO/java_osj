@@ -21,6 +21,7 @@ import kr.green.springtest.pagination.PageMaker;
 import kr.green.springtest.service.BoardService;
 import kr.green.springtest.vo.BoardVO;
 import kr.green.springtest.vo.CommentVO;
+import kr.green.springtest.vo.FileVO;
 import kr.green.springtest.vo.LikesVO;
 import kr.green.springtest.vo.MemberVO;
 
@@ -51,6 +52,9 @@ public class BoardController {
 		
 		LikesVO likes = boardService.getLikes(bd_num, user);
 		
+		ArrayList<FileVO> fileList = boardService.getFileList(bd_num);
+		
+		mv.addObject("fileList", fileList);
 		mv.addObject("likes", likes);
 		mv.addObject("board", board);
     mv.setViewName("/board/select");
@@ -62,9 +66,10 @@ public class BoardController {
     return mv;
 	}
 	@RequestMapping(value="/board/insert", method=RequestMethod.POST)
-	public ModelAndView boardInsertPost(ModelAndView mv, BoardVO board, HttpSession session, MultipartFile[] files){
+	public ModelAndView boardInsertPost(ModelAndView mv, BoardVO board, HttpSession session
+		,MultipartFile[] files){
 		MemberVO user = (MemberVO)session.getAttribute("user");
-		boardService.insertBoard(board,user,files);
+		boardService.insertBoard(board,user, files);
 		mv.setViewName("redirect:/board/list");
     return mv;
 	}
@@ -72,15 +77,18 @@ public class BoardController {
 	public ModelAndView boardUpdateGet(ModelAndView mv,
 			@PathVariable("bd_num")int bd_num){
 		BoardVO board = boardService.getBoard(bd_num);
+		ArrayList<FileVO> fileList = boardService.getFileList(bd_num);
+		mv.addObject("fileList",fileList);
 		mv.addObject("board",board);
     mv.setViewName("/board/update");
     return mv;
 	}
 	@RequestMapping(value="/board/update/{bd_num}", method=RequestMethod.POST)
 	public ModelAndView boardUpdatePost(ModelAndView mv,
-			@PathVariable("bd_num")int bd_num, BoardVO board, HttpSession session) {
+			@PathVariable("bd_num")int bd_num, BoardVO board, HttpSession session,
+			MultipartFile []files, int[] nums) {
 		MemberVO user = (MemberVO) session.getAttribute("user");
-		boardService.updateBoard(board, user);
+		boardService.updateBoard(board, user, files, nums);
     mv.setViewName("redirect:/board/select/"+bd_num);
     return mv;
 	}
@@ -132,7 +140,7 @@ public class BoardController {
 			@RequestBody CommentVO comment,HttpSession session){
 		HashMap<Object, Object> map = new HashMap<Object, Object>();
 		MemberVO user = (MemberVO)session.getAttribute("user");
-		boolean res = boardService.deleteComment(user, comment);
+		boolean res = boardService.deleteComment(comment, user);
 		map.put("res", res);
     return map;
 	}
@@ -142,7 +150,7 @@ public class BoardController {
 			@RequestBody CommentVO comment,HttpSession session){
 		HashMap<Object, Object> map = new HashMap<Object, Object>();
 		MemberVO user = (MemberVO)session.getAttribute("user");
-		boolean res = boardService.updateComment(user, comment);
+		boolean res = boardService.updateComment(comment,user);
 		map.put("res", res);
     return map;
 	}
