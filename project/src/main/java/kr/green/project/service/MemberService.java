@@ -4,5 +4,7 @@ import kr.green.project.vo.MemberVO;
 
 public interface MemberService {
 
-	public void login(MemberVO member);
+	public MemberVO login(MemberVO member);
+
+	public MemberVO signUp(MemberVO member);
 }

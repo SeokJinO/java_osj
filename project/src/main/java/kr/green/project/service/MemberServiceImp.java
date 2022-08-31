@@ -14,8 +14,18 @@ public class MemberServiceImp implements MemberService {
 
 
 	@Override
-	public void login(MemberVO member) {
-		// TODO Auto-generated method stub
+	public MemberVO login(MemberVO member) {		
+		MemberVO dbMember = memberDao.selectMember(member.getMe_id());
+			return dbMember;		
+	}
+
+
+	@Override
+	public MemberVO signUp(MemberVO member) {
+		if(member == null || member.getMe_id() == null || member.getMe_pw() == null)
+			return null;
+		MemberVO dbMember = (MemberVO)memberDao.insertMember(member);
+		return dbMember;
 		
 	}
 }
