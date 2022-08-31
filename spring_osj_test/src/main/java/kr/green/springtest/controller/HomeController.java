@@ -1,5 +1,6 @@
 package kr.green.springtest.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,7 +83,43 @@ public class HomeController {
 		map.put("check", memberService.idCheck(member));
 		return map;
 	}
-	
-	
+	@RequestMapping(value= "/find", method=RequestMethod.GET)
+	public ModelAndView findGet(ModelAndView mv){
+	    mv.setViewName("/main/find");
+
+	    return mv;
+	}
+	@RequestMapping(value ="/ajax/find/id", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<Object,Object> findId(@RequestBody MemberVO member){
+		HashMap<Object, Object> map = new HashMap<Object, Object>();
+		ArrayList<String> idList = memberService.getIdList(member);
+		map.put("idList", idList);
+		return map;
+	}
+	@RequestMapping(value ="/ajax/find/pw", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<Object,Object> findPw(@RequestBody MemberVO member){
+		HashMap<Object, Object> map = new HashMap<Object, Object>();
+		boolean res = memberService.findPw(member);
+		map.put("res", res);
+		return map;
+	}
+	@RequestMapping(value= "/member/update", method=RequestMethod.GET)
+	public ModelAndView memberUpdateGet(ModelAndView mv){
+		
+	    mv.setViewName("/main/update");
+
+	    return mv;
+	}
+	@RequestMapping(value= "/member/update", method=RequestMethod.POST)
+	public ModelAndView memberUpdatePost(ModelAndView mv, MemberVO member, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		boolean res = memberService.updateMember(member, user);
+		
+	    mv.setViewName("redirect:/member/update");
+
+	    return mv;
+	}
 	
 }

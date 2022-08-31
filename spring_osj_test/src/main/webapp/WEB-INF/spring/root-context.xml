@@ -22,7 +22,7 @@
 		<property name="username" value="root"></property>
 		<property name="password" value="cjgreen"></property>
 	</bean>
-	
+
 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -31,5 +31,20 @@
 	</bean>
 	<mybatis-spring:scan
 		base-package="kr.green.springtest.dao" />
-
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="dissegosj@gmail.com" />
+		<property name="password" value="zbwtgbqfkpbelitl" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+				<prop key="mail.stmp.ssl.protocols">TLSv1.2</prop>
+			</props>
+		</property>
+	</bean>
 </beans>
