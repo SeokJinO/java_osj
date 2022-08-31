@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -8,21 +8,33 @@
   </select>
   <insert id="insertMember">
   	insert into member(me_id, me_pw, me_email, me_birth, me_gender, me_authority)
-  	values (#{m.me_id},#{m.me_pw},#{m.me_email},#{m.me_birth},#{m.me_gender},1);
+  	values(#{m.me_id},#{m.me_pw},#{m.me_email},#{m.me_birth},#{m.me_gender},1)
   </insert>
   <select id="selectIdList" resultType="String">
-  	select me_id from member where me_email = #{m.me_email} and me_birth = #{m.me_birth_str};
+  	select me_id from member where me_email = #{m.me_email} and me_birth = #{m.me_birth_str}
   </select>
   <select id="selectMemberByEmailBirth" resultType="kr.green.spring.vo.MemberVO">
-  	select * from member where me_birth = #{m.me_birth_str} and me_email = #{m.me_email};
+  	select * from member where me_email = #{m.me_email} and me_birth = #{m.me_birth_str}
   </select>
   <update id="updateMember">
-  	update member set 
-  	me_pw = #{m.me_pw},
-  	me_gender = #{m.me_gender},
-  	me_birth = #{m.me_birth},
-  	me_email = #{m.me_email},
-  	me_authority = #{m.me_authority}
+  	update member set
+  		me_pw = #{m.me_pw},
+  		me_gender = #{m.me_gender},
+  		me_birth = #{m.me_birth},
+  		me_email = #{m.me_email},
+  		me_authority = #{m.me_authority}
   	where me_id = #{m.me_id}
   </update>
+  <update id="updateMemberSession">
+  	update member set 
+  		me_session_id = #{me_session_id},
+  		me_session_limit = #{me_session_limit}
+  	where me_id = #{me_id}
+  </update>
+  <select id="selectMemberBySession" resultType="kr.green.spring.vo.MemberVO">
+  	select * from member where me_session_id = #{session_id} and me_session_limit > now()
+  </select>
+  <select id="selectMemberList" resultType="kr.green.spring.vo.MemberVO">
+  	<![CDATA[select * from member where me_authority < ]]> #{me_authority}
+  </select>
 </mapper>
