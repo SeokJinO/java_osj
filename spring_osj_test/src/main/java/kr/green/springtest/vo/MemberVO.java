@@ -17,7 +17,7 @@ public class MemberVO {
 	private String me_email;
 	private int me_authority;
 	private boolean autoLogin;
-	
+
 	public String getMe_birth_str() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		return format.format(me_birth);

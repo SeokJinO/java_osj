@@ -3,29 +3,36 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.green.springtest.dao.MemberDAO">
-	<select id="selectMember" resultType="kr.green.springtest.vo.MemberVO">
-		select * from member where me_id = #{me_id}
-	</select>
-	<insert id="insertMember">
-		insert into member(me_id, me_pw, me_gender, me_birth, me_email)
-		values(#{m.me_id},#{m.me_pw},#{m.me_gender},#{m.me_birth},#{m.me_email})
-	</insert>
-	<select id="selectIdList" resultType="String">
-		select me_id from member where me_email = #{m.me_email} and me_birth = #{m.me_birth_str}
-	</select>
-	<update id="updateMember">
-		update member set 
-			me_pw = #{m.me_pw},
-			me_gender = #{m.me_gender},
-			me_email = #{m.me_email},
-			me_birth = #{m.me_birth},
-			me_authority = #{m.me_authority}
-		where me_id = #{m.me_id}
-	</update>
-	<update id="updateMemberSession">
-		update member set
-			me_session_id = #{session_id},
-			me_session_limit = #{session_limit}
-		where me_id = #{me_id}
-	</update>
+  <select id="selectMember" resultType="kr.green.springtest.vo.MemberVO">
+  	select * from member where me_id = #{me_id}
+  </select>
+  <insert id="insertMember">
+  	insert into member(me_id, me_pw, me_gender, me_birth, me_email)
+  	values(#{m.me_id},#{m.me_pw},#{m.me_gender},#{m.me_birth},#{m.me_email})
+  </insert>
+  <select id="selectId" resultType="String">
+  	select me_id from member 
+  		where me_email = #{m.me_email} and me_birth = #{m.me_birth_str}
+  </select>
+  <update id="updateMember">
+  	update member set
+  		me_pw        = #{m.me_pw},
+  		me_gender    = #{m.me_gender},
+  		me_email     = #{m.me_email},
+  		me_birth     = #{m.me_birth},
+  		me_authority = #{m.me_authority}
+  	where me_id = #{m.me_id}
+  </update>
+  <update id="updateMemberSession">
+  	update member set
+  		me_session_id = #{session_id},
+  		me_session_limit = #{session_limit}
+  	where me_id = #{me_id}
+  </update>
+  <select id="selectMemberBySession" resultType="kr.green.springtest.vo.MemberVO">
+  	select * from member where me_session_id = #{session_id} and me_session_limit > now()
+  </select>
+  <select id="selectMemberList" resultType="kr.green.springtest.vo.MemberVO">
+  	select * from member where #{me_authority} > me_authority
+  </select>
 </mapper>
