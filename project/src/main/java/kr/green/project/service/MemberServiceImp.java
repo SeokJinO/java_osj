@@ -1,5 +1,9 @@
 package kr.green.project.service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +31,15 @@ public class MemberServiceImp implements MemberService {
 		MemberVO dbMember = (MemberVO)memberDao.insertMember(member);
 		return dbMember;
 		
+	}
+
+
+	@Override
+	public void logout(HttpServletRequest request, HttpServletResponse response) {
+		if(request == null || response == null)
+			return;
+		HttpSession session = request.getSession();
+		MemberVO user = (MemberVO)request.getSession().getAttribute("user");
+		session.removeAttribute("user");
 	}
 }

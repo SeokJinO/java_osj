@@ -1,7 +1,7 @@
 package kr.green.project.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,6 +54,12 @@ public class HomeController {
 	    mv.setViewName("redirect:/");
 	    System.out.println(member);
 	    MemberVO dbMember = memberService.signUp(member);
+	    return mv;
+	}
+	@RequestMapping(value= "/logout", method=RequestMethod.GET)
+	public ModelAndView logoutGet(ModelAndView mv, HttpServletRequest request, HttpServletResponse response){
+		memberService.logout(request, response);
+	    mv.setViewName("redirect:/");
 	    return mv;
 	}
 	
